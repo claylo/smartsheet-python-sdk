@@ -24,7 +24,11 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 
-_TRUSTED_CERT_FILE = certifi.where()
+# https://github.com/certifi/python-certifi#1024-bit-root-certificates
+if ssl.OPENSSL_VERSION_INFO and ssl.OPENSSL_VERSION_INFO < (1, 0, 2, 0, 0):
+    _TRUSTED_CERT_FILE = certifi.old_where()
+else:
+    _TRUSTED_CERT_FILE = certifi.where()
 
 
 class _SSLAdapter(HTTPAdapter):
